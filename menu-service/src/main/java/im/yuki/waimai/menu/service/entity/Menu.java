@@ -1,8 +1,13 @@
 package im.yuki.waimai.menu.service.entity;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.math.BigDecimal;
 
-public class Menu {
+@EqualsAndHashCode(callSuper = true)
+@Data
+public class Menu extends BaseEntity {
 
     /**
      * 主键id
