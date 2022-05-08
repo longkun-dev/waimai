@@ -19,4 +19,5 @@ pagehelper:
   reasonable: false
   helper-dialect: mysql
 logging:
-  level: im.yuki.waimai.menu.service.dao=debug
+  level:
+    im.yuki.waimai.menu.service.dao: debug

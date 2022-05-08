@@ -4,6 +4,7 @@ import im.yuki.waimai.menu.service.entity.Menu;
 import im.yuki.waimai.menu.service.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class MenuController {
     private MenuService menuService;
 
     @RequestMapping("/findByPage")
-    public List<Menu> findByPage(int pageNum, int pageSize) {
+    public List<Menu> findByPage(@RequestParam int pageNum, @RequestParam int pageSize) {
         return menuService.findByPage(pageNum, pageSize);
     }
 }

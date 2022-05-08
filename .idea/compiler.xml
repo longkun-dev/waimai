@@ -10,6 +10,7 @@
         <module name="config-server" />
         <module name="api-service" />
         <module name="order-service" />
+        <module name="user-service" />
         <module name="menu-service" />
         <module name="eureka-server" />
       </profile>
@@ -22,6 +23,7 @@
       <module name="eureka-server" options="-parameters" />
       <module name="menu-service" options="-parameters" />
       <module name="order-service" options="-parameters" />
+      <module name="user-service" options="-parameters" />
       <module name="waimai" options="-parameters" />
     </option>
   </component>

@@ -3,6 +3,7 @@ package im.yuki.waimai.api.service.feign;
 import im.yuki.waimai.api.service.entity.Menu;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -10,6 +11,6 @@ import java.util.List;
 public interface MenuFeign {
 
     @GetMapping(value = "/menu/findByPage")
-    List<Menu> findByPage(int pageNum, int pageSize);
+    List<Menu> findByPage(@RequestParam int pageNum, @RequestParam int pageSize);
 
 }
