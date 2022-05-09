@@ -59,7 +59,7 @@
                user.created_by,
                user.created_time,
                user.updated_by,
-               user.updated_time
+               user.created_time
         from tb_user as user
                  left join tb_role as role
                            on user.role_code = role.role_code

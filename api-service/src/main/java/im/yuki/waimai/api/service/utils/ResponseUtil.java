@@ -13,6 +13,10 @@ public class ResponseUtil {
         return new ResponseEntity<>(ResultEnum.SUCCESS, data);
     }
 
+    public static <T> ResponseEntity<T> success(String message) {
+        return new ResponseEntity<T>(ResultEnum.SUCCESS.getCode(), message);
+    }
+
     public static <T> ResponseEntity<T> failed() {
         return new ResponseEntity<>(ResultEnum.FAILED);
     }

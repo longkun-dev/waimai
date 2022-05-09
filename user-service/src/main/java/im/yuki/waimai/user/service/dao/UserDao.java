@@ -2,6 +2,9 @@ package im.yuki.waimai.user.service.dao;
 
 import im.yuki.waimai.user.service.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author longkun
@@ -16,8 +19,10 @@ public interface UserDao {
 
     int count();
 
-    int update(User user);
-
     int deleteById(int id);
+
+    List<User> findAll();
+
+    User findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
 
 }

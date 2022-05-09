@@ -1,4 +1,4 @@
-package im.yuki.waimai.user.service.entity;
+package im.yuki.waimai.api.service.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
