@@ -15,4 +15,21 @@
 > 在启动类上加 exclude = DataSourceAutoConfiguration.class
 
 
+## 创建网关项目，报错需要排除 spring-boot-starter-web
+错误信息：
+Spring MVC found on classpath, Spring Cloud Gateway at this time. Please remove spring-boot-star
+> 因为在父项目中引入了 web 依赖，所以子模块中也会引入该依赖，但是 spring-cloud-gateway 中需要排除该依赖，
+> 利用 maven 中依赖覆盖原则
+> 1.依赖路径短的优先
+> 2.后声明的优先
+> 3.路径长度相同，声明顺序优先
+> 在网关项目中引入该依赖，然后加上 scope=test可以解决该问题。
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <scope>test</scope>
+</dependency>
+```
+参考链接：[maven 如何不继承 parent 里面的部分依赖](https://www.oschina.net/question/1756518_221515)
 

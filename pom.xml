@@ -15,6 +15,7 @@
         <module>menu-service</module>
         <module>api-service</module>
         <module>user-service</module>
+        <module>gateway-service</module>
     </modules>
 
     <properties>
