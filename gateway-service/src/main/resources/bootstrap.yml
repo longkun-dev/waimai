@@ -19,6 +19,10 @@ spring:
           predicates:
             - Path=/menu/**
           filters:
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/user/**
       enabled: true
 eureka:
   client:
