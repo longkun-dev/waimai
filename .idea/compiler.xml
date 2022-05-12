@@ -8,7 +8,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="config-server" />
-        <module name="api-service" />
         <module name="common-service" />
         <module name="gateway-service" />
         <module name="order-service" />
@@ -18,7 +17,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="common-service" target="1.8" />
+      <module name="api-service" target="8" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

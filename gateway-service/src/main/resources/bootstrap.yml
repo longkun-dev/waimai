@@ -7,7 +7,6 @@ spring:
     config:
       uri: http://localhost:8010
       fail-fast: true
-      profile: dev
     gateway:
       discovery:
         locator:

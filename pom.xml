@@ -13,7 +13,6 @@
         <module>config-server</module>
         <module>order-service</module>
         <module>menu-service</module>
-        <module>api-service</module>
         <module>user-service</module>
         <module>gateway-service</module>
         <module>common-service</module>
