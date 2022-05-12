@@ -1,7 +1,6 @@
 package im.yuki.waimai.gateway.service.filter;
 
 import im.yuki.waimai.common.service.util.JwtUtil;
-import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;

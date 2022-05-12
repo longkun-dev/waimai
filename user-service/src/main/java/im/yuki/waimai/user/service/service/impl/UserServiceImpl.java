@@ -7,6 +7,8 @@ import im.yuki.waimai.common.service.util.RequestUtil;
 import im.yuki.waimai.user.service.dao.UserDao;
 import im.yuki.waimai.user.service.entity.User;
 import im.yuki.waimai.user.service.service.UserService;
+import io.jsonwebtoken.Claims;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -63,6 +66,25 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(user.getPassword())) {
             // 屏蔽用户密码
             user.setPassword("****");
+        }
+        return user;
+    }
+
+    @Override
+    public User findByToken(String token) {
+        if (StringUtils.isBlank(token)) {
+            return null;
+        }
+
+        User user;
+        try {
+            Claims claims = JwtUtil.parseToken(token);
+            String subject = claims.getSubject();
+            user = userDao.findByUsername(subject);
+        } catch (Exception e) {
+            log.warn("token 解析失败，{}", token);
+            log.warn("异常信息: ", e);
+            return null;
         }
         return user;
     }

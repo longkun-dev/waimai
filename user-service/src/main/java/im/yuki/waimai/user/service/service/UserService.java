@@ -12,4 +12,6 @@ public interface UserService {
     List<User> listUserByPage(int pageNum, int pageSize);
 
     User getCurrentUserInfo();
+
+    User findByToken(String token);
 }

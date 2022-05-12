@@ -35,4 +35,8 @@ public class UserController {
         return ResponseUtil.success(userService.getCurrentUserInfo());
     }
 
+    @GetMapping("/findByToken")
+    public Response<User> findByToken(@RequestParam String token) {
+        return ResponseUtil.success(userService.findByToken(token));
+    }
 }

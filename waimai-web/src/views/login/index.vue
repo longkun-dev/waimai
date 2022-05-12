@@ -52,8 +52,9 @@
 </template>
 
 <script>
-import { login } from '@/api/user'
-import Cookies from 'js-cookie'
+import store from '@/store'
+import { getToken } from '@/utils/auth'
+import { Message } from 'element-ui'
 
 export default {
   name: 'Login',
@@ -91,21 +92,15 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          login(this.loginForm).then((res) => {
-            if (res.data.token) {
-              this.$store.commit('user/SET_NAME', this.loginForm.username)
-              this.$store.commit('user/SET_TOKEN', res.data.token)
-              this.$store.commit('user/SET_AVATAR', '../../icons/svg/user.svg')
-              Cookies.set('token', res.data.token)
+          store.dispatch('user/login', this.loginForm).then((res) => {
+            if (getToken()) {
+              Message.success('登录成功')
               this.$router.push({ path: this.redirect || '/' })
-              this.loading = false
-            } else {
-              this.loading = false
-              return false
             }
-          }).catch(() => {
-            this.loading = false
+          }).catch((err) => {
+            Message.error(err)
           })
+          this.loading = false
         } else {
           console.log('error submit!!')
           return false

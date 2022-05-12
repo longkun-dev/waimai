@@ -18,9 +18,9 @@ import java.util.Date;
 public class JwtUtil {
 
     /**
-     * token 默认有效期，默认一个小时
+     * token 默认有效期，默认 15 分钟
      */
-    public static final Long JWT_TTL = 60 * 60 * 1000L;
+    public static final Long JWT_TTL = 15 * 60 * 1000L;
 
     /**
      * 设置密钥明文

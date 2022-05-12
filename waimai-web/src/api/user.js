@@ -8,10 +8,18 @@ export function login(data) {
   })
 }
 
-export function getInfo() {
+export function getCurrentUserInfo() {
   return request({
     url: 'user/currentUserInfo',
     method: 'get'
+  })
+}
+
+export function getUserInfoByToken(token) {
+  return request({
+    url: 'user/findByToken',
+    method: 'get',
+    params: token
   })
 }
 
