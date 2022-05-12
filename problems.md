@@ -33,3 +33,23 @@ Spring MVC found on classpath, Spring Cloud Gateway at this time. Please remove 
 ```
 参考链接：[maven 如何不继承 parent 里面的部分依赖](https://www.oschina.net/question/1756518_221515)
 
+
+## spring cloud gateway读取不到配置中心的配置问题
+> 在配置中心配置了网关服务的启动端口，但是启动时，日志显示一直从 http://localhost:8888 读取配置，
+> 然后从 8080 端口启动。
+> 将配置中心的配置移到网关服务的 bootstrap.yml 文件下还是读取不到配置，
+> 看了 target 目录下，没有找到 resources 目录，因为 pom.xml 中没有将 resources 编译到 target 中，
+> 在 pom.xml 加上配置成功从配置中心读取配置。
+
+```xml
+<build>
+    <resources>
+        <resource>
+            <directory>src/main/resources</directory>
+            <includes>
+                <include>**/*.yml</include>
+            </includes>
+        </resource>
+    </resources>
+</build>
+```
