@@ -1,16 +1,13 @@
 package im.yuki.waimai.user.service.controller;
 
+import com.github.pagehelper.PageInfo;
 import im.yuki.waimai.common.service.entity.Response;
 import im.yuki.waimai.common.service.util.ResponseUtil;
 import im.yuki.waimai.user.service.entity.User;
 import im.yuki.waimai.user.service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -21,13 +18,19 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/findByPage")
-    public Response<List<User>> findByPage(@RequestParam int pageNum, @RequestParam int pageSize) {
+    public Response<PageInfo<User>> findByPage(@RequestParam int pageNum, @RequestParam int pageSize) {
         return ResponseUtil.success(userService.listUserByPage(pageNum, pageSize));
     }
 
     @GetMapping("/doLogin")
-    public Response<Map<String, Object>> doLogin(@RequestParam String username, @RequestParam String password) {
-        return ResponseUtil.success(userService.doLogin(username, password));
+    public Response<Map<String, Object>> doLogin(@RequestParam String uid, @RequestParam String password) {
+        return ResponseUtil.success(userService.doLogin(uid, password));
+    }
+
+    @GetMapping("/doLogout")
+    public Response<?> doLogout() {
+        userService.doLogout();
+        return ResponseUtil.success();
     }
 
     @GetMapping("/currentUserInfo")
@@ -38,5 +41,24 @@ public class UserController {
     @GetMapping("/findByToken")
     public Response<User> findByToken(@RequestParam String token) {
         return ResponseUtil.success(userService.findByToken(token));
+    }
+
+    @GetMapping("/findByNameOrRole")
+    public Response<PageInfo<User>> findByNameOrRole(@RequestParam(required = false) String username,
+                                                     @RequestParam(required = false) String roleCode,
+                                                     @RequestParam int pageNum,
+                                                     @RequestParam int pageSize) {
+        return ResponseUtil.success(userService.findByNameOrRole(username, roleCode, pageNum, pageSize));
+    }
+
+    @PutMapping("/updateAccountStatus")
+    public Response<String> updateAccountStatus(@RequestParam String uid,
+                                                @RequestParam String newAccountStatus) {
+        return ResponseUtil.successWithMessage(userService.updateAccountStatus(uid, newAccountStatus));
+    }
+
+    @PutMapping("/")
+    public Response<String> updateUserInfo(@RequestBody User user) {
+        return ResponseUtil.successWithMessage(userService.updateUserInfo(user));
     }
 }

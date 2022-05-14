@@ -1,11 +1,11 @@
-import { login, getUserInfoByToken } from '@/api/user'
+import { login, getUserInfoByToken, logout } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
   return {
     token: getToken(),
-    name: '',
+    uid: '',
     avatar: ''
   }
 }
@@ -19,8 +19,8 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_UID: (state, uid) => {
+    state.uid = uid
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
@@ -30,9 +30,9 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { uid, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ uid: uid.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
@@ -49,14 +49,16 @@ const actions = {
       getUserInfoByToken({token : token}).then(response => {
         const { data } = response
 
+        console.log('data: ', data)
+
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
 
         data.avatar = 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif'
-        const { username, avatar } = data
+        const { uid, avatar } = data
 
-        commit('SET_NAME', username)
+        commit('SET_UID', uid)
         commit('SET_AVATAR', avatar)
         resolve(data)
       }).catch(error => {
@@ -68,14 +70,14 @@ const actions = {
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      // logout(state.token).then(() => {
+      logout().then(() => {
         removeToken() // must remove  token  first
         resetRouter()
         commit('RESET_STATE')
         resolve()
-      // }).catch(error => {
-      //   reject(error)
-      // })
+      }).catch(error => {
+        reject(error)
+      })
     })
   },
 

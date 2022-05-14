@@ -16,9 +16,9 @@ public class RequestUtil {
         return ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getResponse();
     }
 
-    public static String getCurrentUsername() {
+    public static String getCurrentUid() {
         HttpServletRequest request = RequestUtil.getRequest();
-        return request.getHeader("username");
+        return request.getHeader("uid");
     }
 
 }

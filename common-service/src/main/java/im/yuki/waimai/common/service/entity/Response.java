@@ -34,4 +34,9 @@ public class Response<T> implements Serializable {
         this.message = resultEnum.getMessage();
         this.data = data;
     }
+
+    public Response(ResultEnum resultEnum, String message) {
+        this.code = resultEnum.getCode();
+        this.message = message;
+    }
 }

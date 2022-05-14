@@ -20,7 +20,7 @@ public class Role extends BaseEntity implements Serializable {
     /**
      * 主键id
      */
-    private Integer id;
+    private String id;
 
     /**
      * 角色编码

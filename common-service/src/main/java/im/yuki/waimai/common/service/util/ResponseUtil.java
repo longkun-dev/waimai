@@ -13,12 +13,12 @@ public class ResponseUtil {
         return new Response<>(ResultEnum.SUCCESS, data);
     }
 
-    public static <T> Response<T> success(String message) {
-        return new Response<T>(ResultEnum.SUCCESS.getCode(), message);
+    public static <T> Response<T> successWithMessage(String message) {
+        return new Response<>(ResultEnum.SUCCESS, message);
     }
 
-    public static <T> Response<T> failed() {
-        return new Response<>(ResultEnum.FAILED);
+    public static <T> Response<T> failed(String message) {
+        return new Response<>(ResultEnum.FAILED.getCode(), message);
     }
 
 }

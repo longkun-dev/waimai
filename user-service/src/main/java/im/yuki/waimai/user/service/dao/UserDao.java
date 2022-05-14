@@ -23,7 +23,15 @@ public interface UserDao {
 
     List<User> findAll();
 
-    User findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
+    User findByUidAndPassword(@Param("uid") String uid, @Param("password") String password);
 
     User findByUsername(@Param("username") String username);
+
+    User findByUid(@Param("uid") String uid);
+
+    List<User> findByUsernameOrRoleCode(@Param("username") String username, @Param("roleCode") String roleCode);
+
+    Integer updateAccountStatus(@Param("uid") String uid, @Param("newAccountStatus") String newAccountStatus);
+
+    Integer update(User user);
 }

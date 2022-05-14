@@ -4,8 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import im.yuki.waimai.common.service.util.JwtUtil;
 import im.yuki.waimai.common.service.util.RequestUtil;
+import im.yuki.waimai.user.service.constant.ConstantVal;
 import im.yuki.waimai.user.service.dao.UserDao;
 import im.yuki.waimai.user.service.entity.User;
+import im.yuki.waimai.user.service.feign.RedisClient;
 import im.yuki.waimai.user.service.service.UserService;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
@@ -25,22 +27,28 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private RedisClient redisClient;
+
     @Override
-    public Map<String, Object> doLogin(String username, String password) {
+    public Map<String, Object> doLogin(String uid, String password) {
         Map<String, Object> resultMap = new HashMap<>();
 
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+        if (StringUtils.isBlank(uid) || StringUtils.isBlank(password)) {
             resultMap.put("result", "验证失败");
-            resultMap.put("message", "用户名和密码不能为空");
+            resultMap.put("message", "用户id和密码不能为空");
             return resultMap;
         }
 
-        User user = userDao.findByUsernameAndPassword(username, password);
+        User user = userDao.findByUidAndPassword(uid, password);
         if (user != null) {
-            String token = JwtUtil.createToken(UUID.randomUUID().toString(), username, null);
+            String token = JwtUtil.createToken(UUID.randomUUID().toString(), uid, null);
+            // redis 超时时间和 token 默认时间保持一致
+            redisClient.set(ConstantVal.TOKEN_PREFIX + uid, token, JwtUtil.JWT_TTL.intValue());
             resultMap.put("result", "验证成功");
             resultMap.put("message", "验证成功");
             resultMap.put("token", token);
+            log.info("【用户登录】用户 {}(id: {}) 成功登录系统", user.getUsername(), uid);
         } else {
             resultMap.put("result", "验证失败");
             resultMap.put("message", "用户名或密码错误");
@@ -49,20 +57,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> listUserByPage(int pageNum, int pageSize) {
+    public void doLogout() {
+        String currentUid = RequestUtil.getCurrentUid();
+        String tokenKey = ConstantVal.TOKEN_PREFIX + currentUid;
+        redisClient.del(tokenKey);
+
+        log.info("【用户退出】用户 {} 退出登录", currentUid);
+    }
+
+    @Override
+    public PageInfo<User> listUserByPage(int pageNum, int pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<User> allUserList = userDao.findAll();
-        PageInfo<User> pageInfo = new PageInfo<>(allUserList);
-        return pageInfo.getList();
+        return new PageInfo<>(allUserList);
     }
 
     @Override
     public User getCurrentUserInfo() {
-        String username = RequestUtil.getCurrentUsername();
-        if (StringUtils.isBlank(username)) {
+        String uid = RequestUtil.getCurrentUid();
+        if (StringUtils.isBlank(uid)) {
             return null;
         }
-        User user = userDao.findByUsername(username);
+        User user = userDao.findByUid(uid);
         if (StringUtils.isNotBlank(user.getPassword())) {
             // 屏蔽用户密码
             user.setPassword("****");
@@ -80,7 +96,7 @@ public class UserServiceImpl implements UserService {
         try {
             Claims claims = JwtUtil.parseToken(token);
             String subject = claims.getSubject();
-            user = userDao.findByUsername(subject);
+            user = userDao.findByUid(subject);
         } catch (Exception e) {
             log.warn("token 解析失败，{}", token);
             log.warn("异常信息: ", e);
@@ -88,4 +104,29 @@ public class UserServiceImpl implements UserService {
         }
         return user;
     }
+
+    @Override
+    public PageInfo<User> findByNameOrRole(String username, String roleCode, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<User> userList = userDao.findByUsernameOrRoleCode(username, roleCode);
+        return new PageInfo<>(userList);
+    }
+
+    @Override
+    public String updateAccountStatus(String uid, String newAccountStatus) {
+        Integer result = userDao.updateAccountStatus(uid, newAccountStatus);
+        return result == null ? "不存在该用户" : "账户状态更新成功";
+    }
+
+    @Override
+    public String updateUserInfo(User user) {
+        if (user == null || StringUtils.isBlank(user.getUsername())) {
+            return "uid不能为空";
+        }
+
+        userDao.update(user);
+
+        return "更新成功";
+    }
 }
+

@@ -31,8 +31,9 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
 
-        // 如果是登录请求，则放行
-        if (request.getURI().getPath().contains("/user/doLogin")) {
+        String requestPath = request.getURI().getPath();
+        // 如果是登录请求或者退出登录，则放行
+        if (requestPath.contains("/user/doLogin") || requestPath.contains("/user/doLogout")) {
             return chain.filter(exchange);
         }
 

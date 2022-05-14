@@ -20,7 +20,12 @@ public class User extends BaseEntity implements Serializable {
     /**
      * 主键id
      */
-    private Integer id;
+    private String id;
+
+    /**
+     * 用户id
+     */
+    private String uid;
 
     /**
      * 用户名
@@ -33,6 +38,11 @@ public class User extends BaseEntity implements Serializable {
     private String password;
 
     /**
+     * 联系方式
+     */
+    private String phoneNumber;
+
+    /**
      * 角色编码
      */
     private String roleCode;
@@ -41,5 +51,12 @@ public class User extends BaseEntity implements Serializable {
      * 角色名称
      */
     private String roleName;
+
+    /**
+     * 账户状态
+     */
+    private String accountStatusCode;
+
+    private String accountStatusName;
 
 }

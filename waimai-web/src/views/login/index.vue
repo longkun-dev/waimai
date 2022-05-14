@@ -12,7 +12,7 @@
         </span>
         <el-input
           ref="username"
-          v-model="loginForm.username"
+          v-model="loginForm.uid"
           placeholder="Username"
           name="username"
           type="text"
@@ -44,8 +44,8 @@
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
+        <span style="margin-right:20px;">username: {{ this.loginForm.uid }}</span>
+        <span> password: {{ this.loginForm.password }}</span>
       </div>
     </el-form>
   </div>
@@ -61,7 +61,7 @@ export default {
   data() {
     return {
       loginForm: {
-        username: 'songaimei',
+        uid: 'SONGAIMEI001',
         password: '1234000'
       },
       loading: false,
