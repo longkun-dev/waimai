@@ -1,8 +1,8 @@
 package im.yuki.waimai.user.service.service.impl;
 
+import im.yuki.waimai.common.service.exception.ParamErrorException;
 import im.yuki.waimai.user.service.dao.AccountStatusDao;
 import im.yuki.waimai.user.service.entity.AccountStatus;
-import im.yuki.waimai.user.service.entity.User;
 import im.yuki.waimai.user.service.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -33,9 +33,12 @@ public class AccountServiceImpl implements AccountService {
         String code = accountStatus.getAccountStatusCode();
         String name = accountStatus.getAccountStatusName();
         if (StringUtils.isBlank(code) || StringUtils.isBlank(name)) {
-            return "编码和名称不能为空";
+            throw new ParamErrorException("编码和名称不能为空");
         }
         Integer result = accountStatusDao.updateStatusName(code, name);
-        return result == null ? "数据不存在" : "状态名称更新成功";
+        if (result == null) {
+            throw new ParamErrorException("数据不存在");
+        }
+        return "状态名称更新成功";
     }
 }

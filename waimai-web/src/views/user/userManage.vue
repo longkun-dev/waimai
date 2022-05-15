@@ -6,9 +6,9 @@
       </el-form-item>
       <el-form-item label="角色">
         <el-select v-model="condition.roleCode" clearable placeholder="根绝角色筛选">
-          <el-option label="查看" value="ROLE_VIEW"></el-option>
-          <el-option label="编辑" value="ROLE_EDIT"></el-option>
-          <el-option label="删除" value="ROLE_DEL"></el-option>
+          <el-option v-for="role in roleList" :item="role" :key="role.roleCode" :value="role.roleCode"
+                     :label="role.roleName">
+          </el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -166,7 +166,6 @@ export default {
       this.editDialogVisible = true
     },
     confirmUpdate() {
-      console.log('this.editUserForm: ', this.editUserForm)
       updateUserInfo(this.editUserForm).then((res) => {
         Message.success(res.message)
         this.editDialogVisible = false

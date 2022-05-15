@@ -53,6 +53,8 @@ router.beforeEach(async (to, from, next) => {
       next()
     } else {
       // other pages that do not have permission to access are redirected to the login page.
+      Message.error('尚未登录或会话已过期，请重新登录')
+
       next(`/login?redirect=${ to.path }`)
       NProgress.done()
     }

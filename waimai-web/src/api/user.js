@@ -63,9 +63,9 @@ export function updateUserInfo(user) {
 
 export function updateAccountStatus(data) {
   return request({
-    url: '/user/account/',
+    url: '/user/updateAccountStatus/',
     method: 'put',
-    data: data
+    params: data
   })
 }
 

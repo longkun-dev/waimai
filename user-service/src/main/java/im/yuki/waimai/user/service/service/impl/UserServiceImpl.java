@@ -2,6 +2,7 @@ package im.yuki.waimai.user.service.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import im.yuki.waimai.common.service.exception.ParamErrorException;
 import im.yuki.waimai.common.service.util.JwtUtil;
 import im.yuki.waimai.common.service.util.RequestUtil;
 import im.yuki.waimai.user.service.constant.ConstantVal;
@@ -35,9 +36,7 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> resultMap = new HashMap<>();
 
         if (StringUtils.isBlank(uid) || StringUtils.isBlank(password)) {
-            resultMap.put("result", "验证失败");
-            resultMap.put("message", "用户id和密码不能为空");
-            return resultMap;
+            throw new ParamErrorException("用户 id 和密码不能为空");
         }
 
         User user = userDao.findByUidAndPassword(uid, password);
@@ -45,14 +44,12 @@ public class UserServiceImpl implements UserService {
             String token = JwtUtil.createToken(UUID.randomUUID().toString(), uid, null);
             // redis 超时时间和 token 默认时间保持一致
             redisClient.set(ConstantVal.TOKEN_PREFIX + uid, token, JwtUtil.JWT_TTL.intValue());
-            resultMap.put("result", "验证成功");
-            resultMap.put("message", "验证成功");
             resultMap.put("token", token);
             log.info("【用户登录】用户 {}(id: {}) 成功登录系统", user.getUsername(), uid);
         } else {
-            resultMap.put("result", "验证失败");
-            resultMap.put("message", "用户名或密码错误");
+            throw new ParamErrorException("用户名或密码错误");
         }
+
         return resultMap;
     }
 

@@ -2,6 +2,7 @@ package im.yuki.waimai.common.service.util;
 
 import im.yuki.waimai.common.service.entity.Response;
 import im.yuki.waimai.common.service.entity.ResultEnum;
+import im.yuki.waimai.common.service.exception.BaseException;
 
 public class ResponseUtil {
 
@@ -21,4 +22,11 @@ public class ResponseUtil {
         return new Response<>(ResultEnum.FAILED.getCode(), message);
     }
 
+    public static <T> Response<T> failed(Integer code, String message) {
+        return new Response<>(code, message);
+    }
+
+    public static <T> Response<T> failed(BaseException exception) {
+        return new Response<>(exception.getCode(), exception.getMessage());
+    }
 }

@@ -1,18 +1,21 @@
 package im.yuki.waimai.gateway.service.filter;
 
+import com.alibaba.fastjson2.JSONObject;
 import im.yuki.waimai.common.service.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author longkun-dev
@@ -40,12 +43,13 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         HttpHeaders headers = request.getHeaders();
         String token = headers.getFirst(AUTHORIZE_KEY);
 
-        log.info("token is : {}", token);
-        log.info("headers is : {}", headers);
+        JSONObject responseBody = this.buildResponse(401, "会话已过期，请重新登录", null);
+        byte[] responseBodyBytes = responseBody.toJSONString().getBytes(StandardCharsets.UTF_8);
+        DataBuffer dataBuffer = response.bufferFactory().wrap(responseBodyBytes);
 
         if (StringUtils.isBlank(token)) {
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            return response.setComplete();
+            response.getHeaders().add("Content-Type", "application/json");
+            return response.writeWith(Mono.just(dataBuffer));
         }
 
         try {
@@ -53,8 +57,8 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         } catch (Exception e) {
             // token 解析异常，则表示 token 伪造或过期等
             log.error("token 解析异常");
-            response.setStatusCode(HttpStatus.UNAUTHORIZED);
-            return response.setComplete();
+            response.getHeaders().add("Content-Type", "application/json");
+            return response.writeWith(Mono.just(dataBuffer));
         }
 
         // token 正常，正常放行
@@ -64,5 +68,15 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
     @Override
     public int getOrder() {
         return 0;
+    }
+
+    @SuppressWarnings("unchecked")
+    private JSONObject buildResponse(int code, String message, Object data) {
+        JSONObject response = new JSONObject();
+        response.put("code", code);
+        response.put("message", message);
+        response.put("data", data);
+
+        return response;
     }
 }

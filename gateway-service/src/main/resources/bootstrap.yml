@@ -22,6 +22,15 @@ spring:
           uri: lb://user-service
           predicates:
             - Path=/user/**
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                rate-limiter: "#{@defaultGatewayRateLimiter}"
+                key-resolver: "#{@defaultGatewayKeyResolver}"
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
+                redis-rate-limiter.requestedTokens: 1
       enabled: true
 eureka:
   client:
