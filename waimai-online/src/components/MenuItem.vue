@@ -35,7 +35,7 @@ export default {
         imgSrc: this.imgSrc,
         price: this.price
       }
-      this.$emit('add-item', data)
+      this.$emit('add-item', data, 1)
     }
   }
 }
